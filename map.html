@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Interativo da Terra Média</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.css"
+  />
+  <style>
+    body, html {
+      margin: 0;
+      height: 100%;
+      font-family: 'Ringbearer', serif;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+      background: radial-gradient(circle at top, #4e4620a4, #856f0c2d)
+    }
+
+    .popup-custom {
+      background: url('https://www.transparenttextures.com/patterns/old-map.png') repeat;
+      padding: 10px;
+      border: 2px solid #aa8;
+      border-radius: 12px;
+      color: #331a00;
+      font-family: 'Ringbearer', serif;
+      font-size: 16px;
+    }
+
+    .popup-custom img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+
+    .leaflet-control-zoom {
+      margin-top: 10px;
+    }
+
+    @font-face {
+      font-family: 'Ringbearer';
+      src: url('https://fonts.cdnfonts.com/s/15345/RingbearerMedium-51mgZ.ttf') format('truetype');
+    }
+
+  .map-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+  }
+  
+  .map-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 3px solid #a97e4f;
+    box-shadow: 0 0 20px #000;
+  }
+  
+  .marker {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: gold;
+    border: 2px solid #222;
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    70% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+    100% { opacity: 0; }
+  }
+  
+  .popup {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 260px;
+    background: #1e1e1e;
+    border: 2px solid #a97e4f;
+    border-radius: 10px;
+    padding: 15px;
+    z-index: 10;
+    display: flex;
+    flex-direction:column;
+    gap: 10px;
+    box-shadow: 0 0 15px #000;
+  }
+  
+  .popup img {
+    width: 100%;
+    border-radius: 5px;
+  }
+  
+  .popup.hidden {
+    display: none;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .zoom-controls {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .zoom-controls button {
+    background: #a97e4f;
+    color: white;
+    border: none;
+    font-size: 20px;
+    padding: 5px 10px;
+    margin: 2px 0;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .map-container {
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+  }
+
+  .mini-map {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 160px;
+    height: 100px;
+    border: 2px solid #a97e4f;
+    background: #222;
+    overflow: hidden;
+    z-index: 20;
+    cursor: crosshair;
+  }
+  
+  .mini-map img {
+    position: absolute;
+    border: 2px solid gold;
+    pointer-events: none;
+    z-index: 10;
+    width: 100%;
+    height: auto;
+  }
+  
+  .mini-marker {
+    position: absolute;
+    border: 2px solid gold;
+    pointer-events: none;
+    z-index: 10;
+    width: 40px;
+    height: 25px;
+    top: 20px; /* ajuste manual de início */
+    left: 40px;
+  }
+  </style>
+</head>
+<body>
+  
+    <div id="map"></div>
+  
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
+  <script>
+    // Criação do mapa com zoom inicial
+    const map = L.map('map', {
+      crs: L.CRS.Simple,
+      minZoom: -5,
+      zoomControl: true,
+    });
+
+    const w = 3000, h = 2000;
+    const bounds = [[0,0], [h, w]];
+
+    const image = L.imageOverlay('https://images4.alphacoders.com/135/thumb-1920-1358247.jpeg', bounds).addTo(map);
+    map.fitBounds(bounds);
+
+    // Mini mapa
+    const miniMapLayer = L.imageOverlay('https://images4.alphacoders.com/135/thumb-1920-1358247.jpeg', bounds);
+    const miniMap = new L.Control.MiniMap(miniMapLayer, {
+      toggleDisplay: true,
+      minimized: false,
+      zoomLevelOffset: -5
+    }).addTo(map);
+
+    // Ícones temáticos
+    const iconGandalf = L.icon({
+      iconUrl: 'https://img.icons8.com/?size=100&id=GaE568mJA2Rw&format=png&color=000000',
+      iconSize: [25, 25],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40],
+    });
+
+    const iconRing = L.icon({
+      iconUrl: 'https://img.icons8.com/?size=100&id=GaE568mJA2Rw&format=png&color=000000',
+      iconSize: [25, 25],
+      iconAnchor: [17, 35],
+      popupAnchor: [0, -35],
+    });
+
+    // Adicionar marcações com pop-ups temáticos
+    const markers = [
+      {
+        coords: [1405, 830],
+        icon: iconGandalf,
+        title: 'The Shire',
+        image: 'https://www.columbustravelmedia.com/wp-content/uploads/2019/09/shu-New-Zealand-North-Island-Matamata-Hobbit-House-714806020-editorial-1440x823-1024x585-300x171.jpg',
+        desc: `It's a lush, verdant region in the northwest of Middle-earth, home to the hobbits. It is known for its rolling hills, cultivated fields, peaceful forests, and welcoming villages such as Bag End and Hobbiton. The houses, often carved into hills (such as Bilbo and Frodo Baggins' famous hole), reflect the hobbits' simple, comfortable, and nature-connected lifestyle. The Shire is a symbol of innocence, harmony, and carefree living that contrasts with the dangers of the outside world.`
+      },
+      {
+        coords: [1800, 1100],
+        icon: iconRing,
+        title: 'Carn Dûm',
+        image: 'https://i.postimg.cc/PfD5JhH0/car-dun.jpg',
+        desc: 'It is a dark fortress in the mountains of Angmar, north of Middle-earth. It was the seat of power of the Witch-king of Angmar, the Lord of the Nazgul. Shrouded in darkness and icy weather, it is associated with dark magic, war, and decay. A cold, threatening place, and plagued by evil.'
+      },
+    ];
+
+    markers.forEach(({coords, icon, title, image, desc}) => {
+      L.marker(coords, { icon })
+        .addTo(map)
+        .bindPopup(`
+          <div class="popup-custom">
+            <strong>${title}</strong><br/>
+            ${desc}
+            <img src="${image}" />
+          </div>
+        `);
+    });
+
+    // Ativar zoom com scroll
+    map.scrollWheelZoom.enable();
+  </script>
+  <script src="js/map.js"></script>
+</body>
+</html>
