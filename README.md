@@ -6,4 +6,4 @@ Meu objetivo é desenvolver um site informativo e acrescentar um pouco de dinami
 
 Estou cogitando a possibilidade de criar um mapa interativo para ilustrar os locais mais emblematicos da história. 
 
-Sugestões? faça a sua contribuição!
+Sugestões? faça sua contribuição.
