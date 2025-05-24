@@ -8,4 +8,4 @@ Estou cogitando a possibilidade de criar um mapa interativo para ilustrar os loc
 
 Sugestões!!!? faça sua contribuição...
 
-contato: cogotechnologies@gmail.com 
+# contato: cogotechnologies@gmail.com 
