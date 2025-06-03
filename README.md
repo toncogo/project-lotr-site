@@ -1,4 +1,4 @@
-### BEM-VINDOS! ###
+### BEM-VINDOS ###
 
 Estou criando um website do ilustre John Ronaldo Reuel Tokien (J. R. R. Tolkien). Eu sou fascinado por Hobbit e O Senhor dos Anéis...
 
